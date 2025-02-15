@@ -73,22 +73,30 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50 p-4">
-        <div className="max-w-3xl mx-auto bg-white rounded-lg shadow p-6">
-          <h1 className="text-3xl font-bold mb-4 text-center">Eatgorithm</h1>
+      <div className="min-h-screen bg-gradient-to-r from-blue-100 to-green-100 flex items-center justify-center p-4">
+        <div className="w-full max-w-4xl bg-white shadow-2xl rounded-lg p-8">
+          <header className="mb-8 text-center">
+            <h1 className="text-4xl font-extrabold text-gray-800 mb-2">
+              Eatgorithm
+            </h1>
+            <p className="text-gray-600">
+              Solusi cerdas untuk pola makan sehat Anda
+            </p>
+          </header>
+
           {!token ? (
             <>
-              {/* Navigasi untuk memilih antara Login dan Register */}
-              <div className="flex justify-center space-x-4 mb-6">
+              {/* Navigasi untuk Login dan Register */}
+              <div className="flex justify-center space-x-6 mb-8">
                 <Link
                   to="/login"
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  className="px-6 py-3 bg-blue-600 text-white rounded-full shadow hover:bg-blue-700 transition duration-200"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                  className="px-6 py-3 bg-green-600 text-white rounded-full shadow hover:bg-green-700 transition duration-200"
                 >
                   Register
                 </Link>
@@ -105,17 +113,32 @@ function App() {
             </>
           ) : (
             <>
-              <div className="flex justify-between items-center mb-4">
+              <div className="flex justify-end mb-6">
                 <button
                   onClick={handleLogout}
-                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+                  className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-full shadow transition duration-200"
                 >
                   Logout
                 </button>
               </div>
-              <ProfileInfo profile={profile!} />
-              <UpdateProfile token={token} onProfileUpdated={refreshProfile} />
-              <GenerateMealPlan token={token} />
+              <section className="mb-8">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                  Profile
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <ProfileInfo profile={profile!} />
+                  <UpdateProfile
+                    token={token}
+                    onProfileUpdated={refreshProfile}
+                  />
+                </div>
+              </section>
+              <section>
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                  Rencana Makan
+                </h2>
+                <GenerateMealPlan token={token} />
+              </section>
             </>
           )}
         </div>
