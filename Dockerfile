@@ -1,29 +1,27 @@
-# Stage 1: Build
-FROM node:18-alpine AS builder
+# Gunakan image Nixpacks (atau base image yang sesuai)
+FROM ghcr.io/railwayapp/nixpacks:ubuntu-1731369831 AS builder
 
-# Set direktori kerja
 WORKDIR /app
 
-# Salin file package dan install dependensi
+# Salin file package dan package-lock (jika ada)
 COPY package*.json ./
-RUN npm install
 
-# Salin seluruh source code ke dalam container
+# Atur environment variable untuk meningkatkan timeout npm
+ENV NPM_CONFIG_FETCH_TIMEOUT=120000
+ENV NPM_CONFIG_FETCH_RETRY_MINTIMEOUT=20000
+ENV NPM_CONFIG_FETCH_RETRY_MAXTIMEOUT=120000
+
+# Instal dependensi dengan cache mount (jika menggunakan Docker BuildKit)
+RUN --mount=type=cache,id=npm,target=/root/.npm npm i
+
+# Salin seluruh source code dan build aplikasi
 COPY . .
-
-# Build aplikasi untuk production
 RUN npm run build
 
-# Stage 2: Serve dengan Nginx
+# Stage untuk menyajikan file statis (misalnya menggunakan Nginx)
 FROM nginx:stable-alpine
 
-# Salin build output dari stage builder ke direktori yang digunakan Nginx
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Salin konfigurasi Nginx (opsional, jika ingin custom konfigurasi)
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
-
 EXPOSE 80
-
-# Jalankan Nginx dalam mode foreground
 CMD ["nginx", "-g", "daemon off;"]
