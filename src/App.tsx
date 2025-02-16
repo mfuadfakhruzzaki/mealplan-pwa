@@ -1,5 +1,6 @@
 // src/App.tsx
-import { useState } from "react";
+
+import { JSX, useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -8,34 +9,35 @@ import {
   Navigate,
 } from "react-router-dom";
 
-// Halaman autentikasi
 import { LoginPage } from "@/pages/LoginPage";
 import { RegisterPage } from "@/pages/RegisterPage";
 
-// Komponen profile & meal plan
 import { ProfileInfo } from "@/components/Profile/ProfileInfo";
 import { UpdateProfile } from "@/components/Profile/UpdateProfile";
 import { GenerateMealPlan } from "@/components/MealPlan/GenerateMealPlan";
 
-// Interface profile
 import { Profile } from "@/interfaces/profile";
 
-// Import komponen shadcn/ui (sesuaikan path sesuai struktur proyek)
+// Komponen shadcn/ui
 import { Button } from "@/components/ui/button";
+
+// Ikon lucide-react (pastikan sudah install: npm i lucide-react)
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+  Home as HomeIcon,
+  User as UserIcon,
+  Clipboard as ListIcon,
+  LogOut as LogOutIcon,
+  Edit as EditIcon,
+} from "lucide-react";
 
 const API_BASE = "https://apieat.fuadfakhruz.id";
 
 function App() {
+  // State
   const [token, setToken] = useState<string | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
 
+  // Ambil data profil
   const fetchProfile = async (tkn: string) => {
     try {
       const res = await fetch(`${API_BASE}/user`, {
@@ -54,11 +56,13 @@ function App() {
     }
   };
 
+  // Saat login berhasil
   const handleLoginSuccess = (token: string) => {
     setToken(token);
     fetchProfile(token);
   };
 
+  // Logout
   const handleLogout = async () => {
     try {
       const res = await fetch(`${API_BASE}/logout`, {
@@ -81,6 +85,7 @@ function App() {
     }
   };
 
+  // Refresh profile setelah update
   const refreshProfile = () => {
     if (token) {
       fetchProfile(token);
@@ -89,97 +94,212 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gradient-to-r from-blue-100 to-green-100 flex items-center justify-center p-4">
-        <div className="w-full max-w-4xl bg-white shadow-2xl rounded-lg p-6 md:p-8">
-          <header className="mb-8 text-center">
-            <h1 className="text-4xl font-extrabold text-gray-800 mb-2">
-              Eatgorithm
-            </h1>
-            <p className="text-gray-600">
-              Solusi cerdas untuk pola makan sehat Anda
-            </p>
+      <div className="flex flex-col min-h-screen bg-gray-50">
+        {/* Top Bar */}
+        {token && (
+          <header className="flex items-center justify-between bg-blue-600 px-4 py-3 text-white shadow">
+            <h1 className="text-lg font-bold">Eatgorithm</h1>
+            <Button
+              variant="ghost"
+              className="text-white"
+              onClick={handleLogout}
+            >
+              <LogOutIcon className="w-5 h-5 mr-1" />
+              Logout
+            </Button>
           </header>
+        )}
 
+        {/* Main Content */}
+        <div className="flex-1 overflow-auto">
           {!token ? (
-            <>
-              {/* Navigasi untuk Login dan Register */}
-              <nav className="flex justify-center gap-4 mb-8">
-                <Link to="/login">
-                  <Button variant="default" className="px-6 py-3">
-                    Login
-                  </Button>
-                </Link>
-                <Link to="/register">
-                  <Button variant="secondary" className="px-6 py-3">
-                    Register
-                  </Button>
-                </Link>
-              </nav>
-              <Routes>
-                <Route
-                  path="/login"
-                  element={<LoginPage onLoginSuccess={handleLoginSuccess} />}
-                />
-                <Route path="/register" element={<RegisterPage />} />
-                {/* Redirect jika URL tidak sesuai */}
-                <Route path="*" element={<Navigate to="/login" />} />
-              </Routes>
-            </>
+            <Routes>
+              <Route
+                path="/login"
+                element={<LoginPage onLoginSuccess={handleLoginSuccess} />}
+              />
+              <Route path="/register" element={<RegisterPage />} />
+              {/* Jika belum login, arahkan ke login */}
+              <Route path="*" element={<Navigate to="/login" replace />} />
+            </Routes>
           ) : (
-            <>
-              <div className="flex justify-end mb-6">
-                <Button variant="destructive" onClick={handleLogout}>
-                  Logout
-                </Button>
-              </div>
-              <section className="mb-8 space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Profile</CardTitle>
-                    <CardDescription>Data profil Anda</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {profile ? (
-                      <ProfileInfo profile={profile} />
-                    ) : (
-                      <p className="text-sm text-gray-500">Memuat data...</p>
-                    )}
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Update Profile</CardTitle>
-                    <CardDescription>
-                      Perbarui informasi profil Anda
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <UpdateProfile
-                      token={token}
-                      onProfileUpdated={refreshProfile}
-                    />
-                  </CardContent>
-                </Card>
-              </section>
-              <section>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Rencana Makan</CardTitle>
-                    <CardDescription>
-                      Hasil generate rencana makan berdasarkan data Anda
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <GenerateMealPlan token={token} />
-                  </CardContent>
-                </Card>
-              </section>
-            </>
+            <Routes>
+              {/* Home */}
+              <Route
+                path="/"
+                element={
+                  <HomeScreen
+                    profile={profile}
+                    onGenerateMealPlan={() => console.log("FAB clicked!")}
+                  />
+                }
+              />
+              {/* Profile */}
+              <Route
+                path="/profile"
+                element={<ProfileScreen profile={profile} loading={!profile} />}
+              />
+              {/* Update Profile */}
+              <Route
+                path="/update"
+                element={
+                  <UpdateScreen
+                    token={token}
+                    onProfileUpdated={refreshProfile}
+                  />
+                }
+              />
+              {/* Meal Plan */}
+              <Route
+                path="/mealplan"
+                element={<MealPlanScreen token={token} />}
+              />
+              {/* Jika sudah login dan route tidak dikenali, arahkan ke / */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
           )}
         </div>
+
+        {/* Bottom Navigation (Hanya tampil jika sudah login) */}
+        {token && <BottomNav />}
       </div>
     </Router>
   );
 }
 
 export default App;
+
+/* 
+  ------------------------------------------------------------
+  COMPONENTS SECTION 
+  (Anda bisa memisahkan ke file terpisah; 
+   di sini semua ditaruh jadi satu demi kejelasan contoh)
+  ------------------------------------------------------------
+*/
+
+// Contoh Layar "Home" Sederhana
+function HomeScreen({
+  profile,
+  onGenerateMealPlan,
+}: {
+  profile: Profile | null;
+  onGenerateMealPlan: () => void;
+}) {
+  return (
+    <div className="p-4">
+      <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg p-6 mb-4 shadow">
+        <h2 className="text-2xl font-bold">
+          Selamat Datang{profile && `, ${profile.full_name}`}
+        </h2>
+        <p className="mt-2 text-sm text-white/90">
+          Ini adalah beranda Eatgorithm. Gunakan menu di bawah untuk navigasi.
+        </p>
+      </div>
+
+      {/* Contoh "Floating Action Button" untuk generate meal plan */}
+      <div className="relative">
+        <div className="flex flex-col items-center">
+          <p className="text-center text-sm text-gray-500 mb-2">
+            Tekan tombol di bawah ini untuk membuat rencana makan
+          </p>
+          <Button
+            onClick={onGenerateMealPlan}
+            className="rounded-full bg-green-600 text-white px-6 py-3 shadow"
+          >
+            Generate Meal Plan
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Contoh Layar "Profile"
+function ProfileScreen({
+  profile,
+  loading,
+}: {
+  profile: Profile | null;
+  loading: boolean;
+}) {
+  return (
+    <div className="p-4">
+      {loading ? (
+        <p className="text-center text-gray-500">Memuat data profile...</p>
+      ) : (
+        <ProfileInfo profile={profile!} />
+      )}
+    </div>
+  );
+}
+
+// Contoh Layar "Update Profile"
+function UpdateScreen({
+  token,
+  onProfileUpdated,
+}: {
+  token: string;
+  onProfileUpdated: () => void;
+}) {
+  return (
+    <div className="p-4">
+      <UpdateProfile token={token} onProfileUpdated={onProfileUpdated} />
+    </div>
+  );
+}
+
+// Contoh Layar "Meal Plan"
+function MealPlanScreen({ token }: { token: string }) {
+  return (
+    <div className="p-4">
+      <GenerateMealPlan token={token} />
+    </div>
+  );
+}
+
+// Bottom Navigation
+function BottomNav() {
+  return (
+    <nav className="bg-white border-t border-gray-200 shadow">
+      <div className="flex justify-around py-2">
+        <NavItem to="/" icon={<HomeIcon className="w-5 h-5" />} label="Home" />
+        <NavItem
+          to="/profile"
+          icon={<UserIcon className="w-5 h-5" />}
+          label="Profile"
+        />
+        <NavItem
+          to="/update"
+          icon={<EditIcon className="w-5 h-5" />}
+          label="Update"
+        />
+        <NavItem
+          to="/mealplan"
+          icon={<ListIcon className="w-5 h-5" />}
+          label="MealPlan"
+        />
+      </div>
+    </nav>
+  );
+}
+
+// Komponen Item untuk BottomNav
+function NavItem({
+  to,
+  icon,
+  label,
+}: {
+  to: string;
+  icon: JSX.Element;
+  label: string;
+}) {
+  return (
+    <Link
+      to={to}
+      className="flex flex-col items-center justify-center text-xs text-gray-600 hover:text-blue-600"
+    >
+      {icon}
+      <span className="mt-1">{label}</span>
+    </Link>
+  );
+}
