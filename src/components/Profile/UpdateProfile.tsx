@@ -3,7 +3,7 @@ import { FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-const API_BASE = "https://api.fuadfakhruz.id";
+const API_BASE = "https://apieat.fuadfakhruz.id";
 
 interface UpdateProfileProps {
   token: string;

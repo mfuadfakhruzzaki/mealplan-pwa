@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MealPlan } from "@/interfaces/mealplan";
 
-const API_BASE = "https://api.fuadfakhruz.id";
+const API_BASE = "https://apieat.fuadfakhruz.id";
 
 interface GenerateMealPlanProps {
   token: string;

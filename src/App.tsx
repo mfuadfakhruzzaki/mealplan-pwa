@@ -14,7 +14,7 @@ import { UpdateProfile } from "@/components/Profile/UpdateProfile";
 import { GenerateMealPlan } from "@/components/MealPlan/GenerateMealPlan";
 import { Profile } from "@/interfaces/profile";
 
-const API_BASE = "https://api.fuadfakhruz.id";
+const API_BASE = "https://apieat.fuadfakhruz.id";
 
 function App() {
   const [token, setToken] = useState<string | null>(null);
