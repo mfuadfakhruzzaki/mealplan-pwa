@@ -2,6 +2,7 @@
 import { FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 const API_BASE = "https://apieat.fuadfakhruz.id";
 
@@ -33,6 +34,7 @@ export function UpdateProfile({ token, onProfileUpdated }: UpdateProfileProps) {
         form.elements.namedItem("updateActivityLevel") as HTMLSelectElement
       ).value,
     };
+
     try {
       const res = await fetch(`${API_BASE}/user`, {
         method: "PUT",
@@ -56,33 +58,60 @@ export function UpdateProfile({ token, onProfileUpdated }: UpdateProfileProps) {
   };
 
   return (
-    <div className="border p-4 rounded shadow mt-6">
-      <h3 className="text-xl font-semibold mb-2">Update Profile</h3>
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-3">
-        <Input type="email" name="updateEmail" placeholder="Email" />
-        <Input type="text" name="updateFullName" placeholder="Full Name" />
-        <Input type="date" name="updateBirthDate" />
-        <select name="updateGender" className="border rounded px-3 py-2">
-          <option value="">Pilih Gender</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-        </select>
-        <Input type="number" name="updateWeight" placeholder="Weight (kg)" />
-        <Input type="number" name="updateHeight" placeholder="Height (cm)" />
-        <select name="updateActivityLevel" className="border rounded px-3 py-2">
-          <option value="">Pilih Activity Level</option>
-          <option value="sedentary">Sedentary</option>
-          <option value="lightly active">Lightly Active</option>
-          <option value="moderately active">Moderately Active</option>
-          <option value="very active">Very Active</option>
-        </select>
-        <Button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-600 text-white w-full"
-        >
-          Update Profile
-        </Button>
-      </form>
-    </div>
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle className="text-xl font-semibold">Update Profile</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
+          <Input
+            type="email"
+            name="updateEmail"
+            placeholder="Email"
+            className="w-full"
+          />
+          <Input
+            type="text"
+            name="updateFullName"
+            placeholder="Full Name"
+            className="w-full"
+          />
+          <Input type="date" name="updateBirthDate" className="w-full" />
+          <select
+            name="updateGender"
+            className="border rounded px-3 py-2 w-full"
+          >
+            <option value="">Pilih Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+          <Input
+            type="number"
+            name="updateWeight"
+            placeholder="Weight (kg)"
+            className="w-full"
+          />
+          <Input
+            type="number"
+            name="updateHeight"
+            placeholder="Height (cm)"
+            className="w-full"
+          />
+          <select
+            name="updateActivityLevel"
+            className="border rounded px-3 py-2 w-full"
+          >
+            <option value="">Pilih Activity Level</option>
+            <option value="sedentary">Sedentary</option>
+            <option value="lightly active">Lightly Active</option>
+            <option value="moderately active">Moderately Active</option>
+            <option value="very active">Very Active</option>
+          </select>
+          <Button type="submit" className="w-full">
+            Update Profile
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 }

@@ -2,6 +2,7 @@
 import { useState, FormEvent, ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 const API_BASE = "https://apieat.fuadfakhruz.id";
 
@@ -41,32 +42,35 @@ export function Login({ onLoginSuccess }: LoginProps) {
   };
 
   return (
-    <div className="border p-4 rounded shadow">
-      <h2 className="text-xl font-semibold mb-2">Login</h2>
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <Input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={loginData.username}
-          onChange={handleChange}
-          required
-        />
-        <Input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={loginData.password}
-          onChange={handleChange}
-          required
-        />
-        <Button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-600 text-white w-full"
-        >
-          Login
-        </Button>
-      </form>
-    </div>
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle className="text-xl font-semibold">Login</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <Input
+            type="text"
+            name="username"
+            placeholder="Username"
+            value={loginData.username}
+            onChange={handleChange}
+            required
+            className="w-full"
+          />
+          <Input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={loginData.password}
+            onChange={handleChange}
+            required
+            className="w-full"
+          />
+          <Button type="submit" className="w-full">
+            Login
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 }

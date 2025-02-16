@@ -6,9 +6,10 @@ interface LoginPageProps {
 
 export function LoginPage({ onLoginSuccess }: LoginPageProps) {
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow">
-      <h1 className="text-3xl font-bold mb-4 text-center">Login</h1>
-      <Login onLoginSuccess={onLoginSuccess} />
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
+      <div className="w-full max-w-md">
+        <Login onLoginSuccess={onLoginSuccess} />
+      </div>
     </div>
   );
 }

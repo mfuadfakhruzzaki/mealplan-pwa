@@ -7,12 +7,28 @@ import {
   Link,
   Navigate,
 } from "react-router-dom";
+
+// Halaman autentikasi
 import { LoginPage } from "@/pages/LoginPage";
 import { RegisterPage } from "@/pages/RegisterPage";
+
+// Komponen profile & meal plan
 import { ProfileInfo } from "@/components/Profile/ProfileInfo";
 import { UpdateProfile } from "@/components/Profile/UpdateProfile";
 import { GenerateMealPlan } from "@/components/MealPlan/GenerateMealPlan";
+
+// Interface profile
 import { Profile } from "@/interfaces/profile";
+
+// Import komponen shadcn/ui (sesuaikan path sesuai struktur proyek)
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 
 const API_BASE = "https://apieat.fuadfakhruz.id";
 
@@ -74,7 +90,7 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gradient-to-r from-blue-100 to-green-100 flex items-center justify-center p-4">
-        <div className="w-full max-w-4xl bg-white shadow-2xl rounded-lg p-8">
+        <div className="w-full max-w-4xl bg-white shadow-2xl rounded-lg p-6 md:p-8">
           <header className="mb-8 text-center">
             <h1 className="text-4xl font-extrabold text-gray-800 mb-2">
               Eatgorithm
@@ -87,20 +103,18 @@ function App() {
           {!token ? (
             <>
               {/* Navigasi untuk Login dan Register */}
-              <div className="flex justify-center space-x-6 mb-8">
-                <Link
-                  to="/login"
-                  className="px-6 py-3 bg-blue-600 text-white rounded-full shadow hover:bg-blue-700 transition duration-200"
-                >
-                  Login
+              <nav className="flex justify-center gap-4 mb-8">
+                <Link to="/login">
+                  <Button variant="default" className="px-6 py-3">
+                    Login
+                  </Button>
                 </Link>
-                <Link
-                  to="/register"
-                  className="px-6 py-3 bg-green-600 text-white rounded-full shadow hover:bg-green-700 transition duration-200"
-                >
-                  Register
+                <Link to="/register">
+                  <Button variant="secondary" className="px-6 py-3">
+                    Register
+                  </Button>
                 </Link>
-              </div>
+              </nav>
               <Routes>
                 <Route
                   path="/login"
@@ -114,30 +128,51 @@ function App() {
           ) : (
             <>
               <div className="flex justify-end mb-6">
-                <button
-                  onClick={handleLogout}
-                  className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-full shadow transition duration-200"
-                >
+                <Button variant="destructive" onClick={handleLogout}>
                   Logout
-                </button>
+                </Button>
               </div>
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                  Profile
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <ProfileInfo profile={profile!} />
-                  <UpdateProfile
-                    token={token}
-                    onProfileUpdated={refreshProfile}
-                  />
-                </div>
+              <section className="mb-8 space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Profile</CardTitle>
+                    <CardDescription>Data profil Anda</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {profile ? (
+                      <ProfileInfo profile={profile} />
+                    ) : (
+                      <p className="text-sm text-gray-500">Memuat data...</p>
+                    )}
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Update Profile</CardTitle>
+                    <CardDescription>
+                      Perbarui informasi profil Anda
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <UpdateProfile
+                      token={token}
+                      onProfileUpdated={refreshProfile}
+                    />
+                  </CardContent>
+                </Card>
               </section>
               <section>
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                  Rencana Makan
-                </h2>
-                <GenerateMealPlan token={token} />
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Rencana Makan</CardTitle>
+                    <CardDescription>
+                      Hasil generate rencana makan berdasarkan data Anda
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <GenerateMealPlan token={token} />
+                  </CardContent>
+                </Card>
               </section>
             </>
           )}

@@ -1,4 +1,5 @@
 import { Profile } from "@/interfaces/profile";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 interface ProfileInfoProps {
   profile: Profile;
@@ -6,15 +7,19 @@ interface ProfileInfoProps {
 
 export function ProfileInfo({ profile }: ProfileInfoProps) {
   return (
-    <div className="border p-4 rounded shadow">
-      <h2 className="text-2xl font-semibold mb-2">User Profile</h2>
-      {profile ? (
-        <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto">
-          {JSON.stringify(profile, null, 2)}
-        </pre>
-      ) : (
-        <p>Loading profile...</p>
-      )}
-    </div>
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle className="text-2xl font-semibold">User Profile</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {profile ? (
+          <pre className="bg-gray-50 p-4 rounded text-sm overflow-auto">
+            {JSON.stringify(profile, null, 2)}
+          </pre>
+        ) : (
+          <p>Loading profile...</p>
+        )}
+      </CardContent>
+    </Card>
   );
 }
